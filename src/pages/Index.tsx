@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Star, Users, Calendar, Phone, Mail, Instagram, Facebook, Twitter, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
 
 const Index = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -10,7 +11,14 @@ const Index = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const headerOffset = 80; // altura do header fixo
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -72,25 +80,11 @@ const Index = () => {
                       Sobre nós
                     </a>
                     <a 
-                      href="#equipe" 
-                      onClick={(e) => { e.preventDefault(); scrollToSection('equipe'); setIsDropdownOpen(false); }}
-                      className="block px-4 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors duration-300"
-                    >
-                      Nossa equipe
-                    </a>
-                    <a 
                       href="#depoimentos" 
                       onClick={(e) => { e.preventDefault(); scrollToSection('depoimentos'); setIsDropdownOpen(false); }}
                       className="block px-4 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors duration-300"
                     >
                       Depoimentos
-                    </a>
-                    <a 
-                      href="#blog" 
-                      onClick={(e) => { e.preventDefault(); scrollToSection('blog'); setIsDropdownOpen(false); }}
-                      className="block px-4 py-2 text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors duration-300"
-                    >
-                      Blog
                     </a>
                   </div>
                 </div>
@@ -115,9 +109,15 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section id="inicio" className="relative bg-gradient-to-r from-slate-700 to-slate-500 text-white py-20">
+      <section 
+        id="inicio" 
+        className="relative bg-gradient-to-r from-slate-700/80 to-slate-500/80 text-white py-20 bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(rgba(51, 65, 85, 0.8), rgba(100, 116, 139, 0.8)), url('/lovable-uploads/6aadd536-a4d1-4688-834f-88d48408e0d6.png')`
+        }}
+      >
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-5xl font-bold mb-6 font-playfair">
+          <h2 className="text-5xl font-bold mb-6 font-poppins font-bold">
             Descubra o Mundo com a Viagex
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -147,7 +147,7 @@ const Index = () => {
       <section id="destinos" className="py-16 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-slate-800 mb-4 font-playfair">Destinos Mais Procurados</h3>
+            <h3 className="text-3xl font-bold text-slate-800 mb-4 font-poppins font-bold">Destinos Mais Procurados</h3>
             <p className="text-slate-600 max-w-2xl mx-auto">
               Explore nossos destinos mais populares e encontre sua próxima aventura
             </p>
@@ -261,7 +261,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="text-3xl font-bold text-slate-800 mb-6 font-playfair">
+              <h3 className="text-3xl font-bold text-slate-800 mb-6 font-poppins font-bold">
                 Por que escolher a Viagex?
               </h3>
               <div className="space-y-6">
@@ -313,40 +313,28 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Nossa Equipe */}
-      <section id="equipe" className="py-16 bg-slate-50">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold text-slate-800 mb-6 font-playfair">Nossa Equipe</h3>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Profissionais especializados em turismo, prontos para tornar sua viagem inesquecível.
-          </p>
-        </div>
-      </section>
-
       {/* Depoimentos */}
-      <section id="depoimentos" className="py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold text-slate-800 mb-6 font-playfair">Depoimentos</h3>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Veja o que nossos clientes falam sobre suas experiências conosco.
-          </p>
-        </div>
-      </section>
-
-      {/* Blog */}
-      <section id="blog" className="py-16 bg-slate-50">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold text-slate-800 mb-6 font-playfair">Blog</h3>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Dicas de viagem, roteiros e inspirações para sua próxima aventura.
-          </p>
+      <section id="depoimentos" className="py-16 bg-slate-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold text-slate-800 mb-6 font-poppins font-bold">Depoimentos</h3>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Veja o que nossos clientes falam sobre suas experiências conosco.
+            </p>
+          </div>
+          <TestimonialCarousel />
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-slate-600 text-white">
+      <section 
+        className="py-16 bg-slate-600/80 text-white bg-cover bg-center relative"
+        style={{
+          backgroundImage: `linear-gradient(rgba(51, 65, 85, 0.8), rgba(100, 116, 139, 0.8)), url('/lovable-uploads/4d139a55-3bb4-471a-a3c3-db97a8afef41.png')`
+        }}
+      >
         <div className="container mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold mb-4 font-playfair">
+          <h3 className="text-3xl font-bold mb-4 font-poppins font-bold">
             Pronto para sua próxima aventura?
           </h3>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -422,21 +410,9 @@ const Index = () => {
                 </li>
                 <li 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => scrollToSection('equipe')}
-                >
-                  Nossa equipe
-                </li>
-                <li 
-                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => scrollToSection('depoimentos')}
                 >
                   Depoimentos
-                </li>
-                <li 
-                  className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => scrollToSection('blog')}
-                >
-                  Blog
                 </li>
               </ul>
             </div>
@@ -450,7 +426,9 @@ const Index = () => {
                 </div>
                 <div className="flex items-start space-x-2">
                   <Mail className="h-4 w-4 mt-0.5" />
-                  <span className="break-words">contato@viagex.com.br</span>
+                  <span className="break-words text-sm">
+                    contato@viagex.com.br
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-4 w-4" />
