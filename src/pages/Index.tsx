@@ -2,16 +2,50 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Star, Users, Calendar, Phone, Mail, Instagram, Facebook, Twitter, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
+import SkeletonLoader from "@/components/SkeletonLoader";
 
 const Index = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time for skeleton
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Smooth scroll animations on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in');
+        }
+      });
+    }, observerOptions);
+
+    const sections = document.querySelectorAll('.scroll-animate');
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, [isLoading]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const headerOffset = 80; // altura do header fixo
+      const headerOffset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -32,14 +66,18 @@ const Index = () => {
     window.location.reload();
   };
 
+  if (isLoading) {
+    return <SkeletonLoader />;
+  }
+
   return (
-    <div className="min-h-screen bg-white font-inter">
+    <div className="min-h-screen bg-white font-inter overflow-x-hidden">
       {/* Header/Navigation */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={reloadPage}>
             <MapPin className="h-8 w-8 text-slate-600" />
-            <h1 className="text-2xl font-bold text-slate-800">Viagex</h1>
+            <h1 className="text-2xl font-bold text-slate-800 font-poppins">Viagex</h1>
           </div>
           <nav className="hidden md:flex space-x-8 items-center">
             <a 
@@ -56,21 +94,17 @@ const Index = () => {
             >
               Destinos
             </a>
-            <div className="relative">
-              <button
-                className="flex items-center text-slate-600 hover:text-slate-800 transition-colors duration-300"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
+            <div 
+              className="relative"
+              onMouseEnter={() => setIsDropdownOpen(true)}
+              onMouseLeave={() => setIsDropdownOpen(false)}
+            >
+              <button className="flex items-center text-slate-600 hover:text-slate-800 transition-colors duration-300">
                 Empresa
                 <ChevronDown className="h-4 w-4 ml-1" />
               </button>
               {isDropdownOpen && (
-                <div 
-                  className="absolute top-full left-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-50"
-                  onMouseEnter={() => setIsDropdownOpen(true)}
-                  onMouseLeave={() => setIsDropdownOpen(false)}
-                >
+                <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <a 
                       href="#sobre" 
@@ -111,12 +145,12 @@ const Index = () => {
       {/* Hero Section */}
       <section 
         id="inicio" 
-        className="relative bg-gradient-to-r from-slate-700/80 to-slate-500/80 text-white py-20 bg-cover bg-center"
+        className="relative bg-gradient-to-r from-slate-700/80 to-slate-500/80 text-white py-20 bg-cover bg-center scroll-animate opacity-0"
         style={{
           backgroundImage: `linear-gradient(rgba(51, 65, 85, 0.8), rgba(100, 116, 139, 0.8)), url('/lovable-uploads/6aadd536-a4d1-4688-834f-88d48408e0d6.png')`
         }}
       >
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-6 text-center">
           <h2 className="text-5xl font-bold mb-6 font-poppins font-bold">
             Descubra o Mundo com a Viagex
           </h2>
@@ -144,8 +178,8 @@ const Index = () => {
       </section>
 
       {/* Destinos Populares */}
-      <section id="destinos" className="py-16 bg-slate-50">
-        <div className="container mx-auto px-4">
+      <section id="destinos" className="py-16 bg-slate-50 scroll-animate opacity-0">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-800 mb-4 font-poppins font-bold">Destinos Mais Procurados</h3>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -153,7 +187,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <Card 
               className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-2"
               onClick={() => openWhatsApp("Olá! Tenho interesse no pacote para Portugal.")}
@@ -257,9 +291,9 @@ const Index = () => {
       </section>
 
       {/* Sobre Nós */}
-      <section id="sobre" className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section id="sobre" className="py-16 scroll-animate opacity-0">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div>
               <h3 className="text-3xl font-bold text-slate-800 mb-6 font-poppins font-bold">
                 Por que escolher a Viagex?
@@ -278,8 +312,8 @@ const Index = () => {
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="bg-amber-100 p-3 rounded-full">
-                    <Users className="h-6 w-6 text-amber-600" />
+                  <div className="bg-slate-100 p-3 rounded-full">
+                    <Users className="h-6 w-6 text-slate-600" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-slate-800 mb-2">+10.000 clientes satisfeitos</h4>
@@ -314,8 +348,8 @@ const Index = () => {
       </section>
 
       {/* Depoimentos */}
-      <section id="depoimentos" className="py-16 bg-slate-50">
-        <div className="container mx-auto px-4">
+      <section id="depoimentos" className="py-16 bg-slate-50 scroll-animate opacity-0">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-slate-800 mb-6 font-poppins font-bold">Depoimentos</h3>
             <p className="text-slate-600 max-w-2xl mx-auto">
@@ -328,12 +362,12 @@ const Index = () => {
 
       {/* Call to Action */}
       <section 
-        className="py-16 bg-slate-600/80 text-white bg-cover bg-center relative"
+        className="py-16 bg-slate-600/80 text-white bg-cover bg-center relative scroll-animate opacity-0"
         style={{
           backgroundImage: `linear-gradient(rgba(51, 65, 85, 0.8), rgba(100, 116, 139, 0.8)), url('/lovable-uploads/4d139a55-3bb4-471a-a3c3-db97a8afef41.png')`
         }}
       >
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-6 text-center">
           <h3 className="text-3xl font-bold mb-4 font-poppins font-bold">
             Pronto para sua próxima aventura?
           </h3>
@@ -351,13 +385,13 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer id="contato" className="bg-slate-800 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
+      <footer id="contato" className="bg-slate-800 text-white py-12 scroll-animate opacity-0">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
             <div>
               <div className="flex items-center space-x-2 mb-4 cursor-pointer" onClick={reloadPage}>
                 <MapPin className="h-6 w-6 text-amber-400" />
-                <h4 className="text-xl font-bold">Viagex</h4>
+                <h4 className="text-xl font-bold font-poppins">Viagex</h4>
               </div>
               <p className="text-slate-400 mb-4">
                 Transformando sonhos em realidade há 15 anos

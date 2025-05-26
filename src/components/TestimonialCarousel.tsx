@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Star } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const testimonials = [
   {
@@ -27,33 +27,58 @@ const testimonials = [
 ];
 
 const TestimonialCarousel = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <Carousel className="w-full">
-        <CarouselContent>
+      <div className="relative overflow-hidden">
+        <div 
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
           {testimonials.map((testimonial, index) => (
-            <CarouselItem key={index} className="md:basis-1/2">
+            <div key={index} className="w-full flex-shrink-0 px-4">
               <Card className="h-full">
-                <CardContent className="flex flex-col items-center justify-center p-6 h-full">
+                <CardContent className="flex flex-col items-center justify-center p-8 h-full">
                   <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 text-amber-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-slate-600 text-center mb-4 italic">
+                  <p className="text-slate-600 text-center mb-6 italic text-lg leading-relaxed">
                     "{testimonial.comment}"
                   </p>
-                  <h4 className="font-semibold text-slate-800 font-poppins">
+                  <h4 className="font-semibold text-slate-800 font-poppins text-lg">
                     {testimonial.name}
                   </h4>
                 </CardContent>
               </Card>
-            </CarouselItem>
+            </div>
           ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+        </div>
+      </div>
+      
+      {/* Radio button indicators */}
+      <div className="flex justify-center mt-6 space-x-2">
+        {testimonials.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+              currentSlide === index ? 'bg-slate-600' : 'bg-slate-300'
+            }`}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
     </div>
   );
 };
